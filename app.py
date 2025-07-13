@@ -27,11 +27,29 @@ st.write("Test the spaCy NER models (small and large) trained on news data. Ente
 # Model loading (cache for performance)
 @st.cache_resource(show_spinner=True)
 def load_models():
-    nlp_sm = spacy.load("en_core_web_sm")
-    nlp_lg = spacy.load("en_core_web_lg")
-    return nlp_sm, nlp_lg
+    try:
+        nlp_sm = spacy.load("en_core_web_sm")
+        nlp_lg = spacy.load("en_core_web_lg")
+        return nlp_sm, nlp_lg
+    except OSError as e:
+        st.error("""
+        **Error: spaCy models not found!**
+        
+        Please install the required spaCy models by running these commands in your terminal:
+        ```
+        python -m spacy download en_core_web_sm
+        python -m spacy download en_core_web_lg
+        ```
+        
+        After installing the models, restart the app.
+        """)
+        st.stop()
 
-nlp_sm, nlp_lg = load_models()
+try:
+    nlp_sm, nlp_lg = load_models()
+except Exception as e:
+    st.error(f"Error loading models: {str(e)}")
+    st.stop()
 
 # Model selection
 model_options = {
