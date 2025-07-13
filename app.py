@@ -32,18 +32,31 @@ def load_models():
         nlp_lg = spacy.load("en_core_web_lg")
         return nlp_sm, nlp_lg
     except OSError as e:
-        st.error("""
-        **Error: spaCy models not found!**
-        
-        Please install the required spaCy models by running these commands in your terminal:
-        ```
-        python -m spacy download en_core_web_sm
-        python -m spacy download en_core_web_lg
-        ```
-        
-        After installing the models, restart the app.
-        """)
-        st.stop()
+        # Try to download models automatically
+        st.info("Downloading spaCy models... This may take a few minutes.")
+        try:
+            import subprocess
+            import sys
+            
+            # Download models
+            subprocess.check_call([sys.executable, "-m", "spacy", "download", "en_core_web_sm"])
+            subprocess.check_call([sys.executable, "-m", "spacy", "download", "en_core_web_lg"])
+            
+            # Try loading again
+            nlp_sm = spacy.load("en_core_web_sm")
+            nlp_lg = spacy.load("en_core_web_lg")
+            st.success("Models downloaded and loaded successfully!")
+            return nlp_sm, nlp_lg
+            
+        except Exception as download_error:
+            st.error(f"""
+            **Error: Could not download spaCy models automatically!**
+            
+            Error details: {str(download_error)}
+            
+            Please try refreshing the page or contact support if the issue persists.
+            """)
+            st.stop()
 
 try:
     nlp_sm, nlp_lg = load_models()
