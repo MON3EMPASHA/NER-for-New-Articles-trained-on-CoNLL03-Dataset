@@ -27,10 +27,8 @@ st.write("Test the spaCy NER models (small and large) trained on news data. Ente
 # Model loading (cache for performance)
 @st.cache_resource(show_spinner=True)
 def load_models():
-    sm_path = os.path.join("saved_models", "en_core_web_sm")
-    lg_path = os.path.join("saved_models", "en_core_web_lg")
-    nlp_sm = spacy.load(sm_path)
-    nlp_lg = spacy.load(lg_path)
+    nlp_sm = spacy.load("en_core_web_sm")
+    nlp_lg = spacy.load("en_core_web_lg")
     return nlp_sm, nlp_lg
 
 nlp_sm, nlp_lg = load_models()
