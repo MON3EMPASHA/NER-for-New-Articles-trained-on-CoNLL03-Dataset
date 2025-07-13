@@ -5,6 +5,7 @@ import os
 import tempfile
 from pathlib import Path
 import streamlit.components.v1 as components
+import sys
 
 # Set page config
 st.set_page_config(page_title="News Article NER Demo", layout="wide")
@@ -32,31 +33,23 @@ def load_models():
         nlp_lg = spacy.load("en_core_web_lg")
         return nlp_sm, nlp_lg
     except OSError as e:
-        # Try to download models automatically
-        st.info("Downloading spaCy models... This may take a few minutes.")
-        try:
-            import subprocess
-            import sys
-            
-            # Download models
-            subprocess.check_call([sys.executable, "-m", "spacy", "download", "en_core_web_sm"])
-            subprocess.check_call([sys.executable, "-m", "spacy", "download", "en_core_web_lg"])
-            
-            # Try loading again
-            nlp_sm = spacy.load("en_core_web_sm")
-            nlp_lg = spacy.load("en_core_web_lg")
-            st.success("Models downloaded and loaded successfully!")
-            return nlp_sm, nlp_lg
-            
-        except Exception as download_error:
-            st.error(f"""
-            **Error: Could not download spaCy models automatically!**
-            
-            Error details: {str(download_error)}
-            
-            Please try refreshing the page or contact support if the issue persists.
-            """)
-            st.stop()
+        st.error(f"""
+        **Error: spaCy models not found!**
+        
+        The required spaCy models are not available in this environment.
+        Error: {str(e)}
+        
+        **For local development:**
+        Please install the required spaCy models by running these commands in your terminal:
+        ```
+        python -m spacy download en_core_web_sm
+        python -m spacy download en_core_web_lg
+        ```
+        
+        **For Streamlit Cloud deployment:**
+        The models need to be included in the deployment package. Please check the deployment configuration.
+        """)
+        st.stop()
 
 try:
     nlp_sm, nlp_lg = load_models()
