@@ -1,4 +1,9 @@
-# News Article NER Streamlit App
+# 📰 News Article NER Streamlit App
+
+A Named Entity Recognition (NER) web application for news articles using spaCy models trained on the CoNLL-2003 dataset.
+
+🔗 **Live Demo:** [ner-for-news-articles-trained-on-conll03-dataset-by-mon3em.streamlit.app](https://ner-for-news-articles-trained-on-conll03-dataset-by-mon3em.streamlit.app/)
+
 
 This application provides an interactive web interface for Named Entity Recognition (NER) on news articles using spaCy models. You can input your own text or select from example news snippets, and the app will highlight and list recognized entities such as Person, Organisation, Location, Date, and Miscellaneous.
 
