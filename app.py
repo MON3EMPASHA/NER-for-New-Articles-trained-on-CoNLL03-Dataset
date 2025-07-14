@@ -10,6 +10,32 @@ import sys
 # Set page config
 st.set_page_config(page_title="News Article NER Demo", layout="wide")
 
+# Model loading (cache for performance) - moved to top level
+@st.cache_resource(show_spinner=True)
+def load_models():
+    try:
+        nlp_sm = spacy.load("en_core_web_sm")
+        nlp_lg = spacy.load("en_core_web_lg")
+        return nlp_sm, nlp_lg
+    except OSError as e:
+        st.error(f"""
+        **Error: spaCy models not found!**
+        
+        The required spaCy models are not available in this environment.
+        Error: {str(e)}
+        
+        **For local development:**
+        Please install the required spaCy models by running these commands in your terminal:
+        ```
+        python -m spacy download en_core_web_sm
+        python -m spacy download en_core_web_lg
+        ```
+        
+        **For Streamlit Cloud deployment:**
+        The models need to be included in the deployment package. Please check the deployment configuration.
+        """)
+        st.stop()
+
 # Sidebar navigation
 with st.sidebar:
     st.title("🧭 Navigation")
@@ -35,32 +61,6 @@ if page == "🤖 NER Inference":
 
     st.title("📰 Named Entity Recognition for News Articles")
     st.write("Test the spaCy NER models (small and large) trained on news data. Enter your own text and see the recognized entities, both highlighted and listed.")
-
-    # Model loading (cache for performance)
-    @st.cache_resource(show_spinner=True)
-    def load_models():
-        try:
-            nlp_sm = spacy.load("en_core_web_sm")
-            nlp_lg = spacy.load("en_core_web_lg")
-            return nlp_sm, nlp_lg
-        except OSError as e:
-            st.error(f"""
-            **Error: spaCy models not found!**
-            
-            The required spaCy models are not available in this environment.
-            Error: {str(e)}
-            
-            **For local development:**
-            Please install the required spaCy models by running these commands in your terminal:
-            ```
-            python -m spacy download en_core_web_sm
-            python -m spacy download en_core_web_lg
-            ```
-            
-            **For Streamlit Cloud deployment:**
-            The models need to be included in the deployment package. Please check the deployment configuration.
-            """)
-            st.stop()
 
     try:
         nlp_sm, nlp_lg = load_models()
